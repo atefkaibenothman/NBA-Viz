@@ -19,7 +19,10 @@ class SearchForm extends Component {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log(this.state.id);
+        fetch(`/stats?id=${this.state.id}`)
+            .then(res => res.json());
+        //.then(data => this.props.data.updateInfo(data));
+
         // onSubmit(event) {
         //     event.preventDefault();
         //     fetch(`/api/stats?id=${this.state.id}`)

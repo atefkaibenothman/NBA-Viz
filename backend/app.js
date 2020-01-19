@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var db = require('./pgpool');
 
 var indexRouter = require('./routes/index');
 var statsRouter = require('./routes/stats');
@@ -22,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/stats', statsRouter);
+app.use('/api/stats', statsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -41,3 +42,21 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+start();
+
+async function start() {
+  await connect();
+}
+
+async function connect() {
+  var pool = db.getPool();
+  pool.connect((err, db, done) => {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log('connected to \'nba_db\' database');
+    }
+  })
+}
