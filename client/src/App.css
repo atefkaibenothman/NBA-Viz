@@ -21,7 +21,9 @@ body {
   margin-right: 10px;
   margin-left: 10px;
   background-color: white;
-  height: 100px;
+  height: 100%;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .commoninfodiv {
@@ -36,13 +38,23 @@ body {
   padding: 5px;
 }
 
+.statspan {
+  margin-top: 5px;
+}
+
 .teamname {
-  padding-left: 5px;
-  padding-top: 10px;
+  margin-left: 5px;
+  /* background-color: aquamarine; */
+}
+
+.playerpos {
+  margin-left: 30px;
+  /* background-color: blueviolet; */
 }
 
 .playerid {
-  padding-left: 5px;
-  position: relative;
-  bottom: 15px;;
+  margin-top: -8px;
+  margin-left: 5px;
+  margin-right: 80%;
+  /* background-color: cadetblue; */
 }
