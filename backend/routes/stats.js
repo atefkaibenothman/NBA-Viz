@@ -4,33 +4,37 @@ var db = require('../pgpool');
 
 router.get('/', function (req, res, next) {
     const player_id = req.query.id;
-    let data = {};
 
     if (player_id == undefined) {
         res.send('Must enter a player id');
     }
     else {
-        var pool = db.getPool();
-        pool.query(`select player_id, lname, fname, position, team_abr from player where player_id=${player_id}`, (err, table) => {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(`succesfully fetched common player info for player: ${player_id}`);
-                data['common_info'] = table.rows;
-            }
-        });
-        pool.query(`select * from gamestats where player_id=${player_id}`, (err, table) => {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(`succesfully fetched player game logs for player: ${player_id}`);
-                data['game_logs'] = table.rows;
+        async function begin() {
+            let data = {};
+            let commonData = await getPlayerCommonInfo();
+            let gameLogData = await getPlayerGameLogs();
+            data['commonData'] = commonData;
+            data['gameLogData'] = gameLogData;
+            return data;
+        }
 
+        begin()
+            .then(function (data) {
                 res.send(data);
-            }
-        })
+                console.log('api successfully sent data');
+            })
+    }
+
+    async function getPlayerCommonInfo() {
+        var pool = db.getPool();
+        var result = await pool.query(`select player_id, lname, fname, position, team_abr from player where player_id=${player_id}`);
+        return result.rows;
+    }
+
+    async function getPlayerGameLogs() {
+        var pool = db.getPool();
+        var result = await pool.query(`select * from gamestats where player_id=${player_id}`);
+        return result.rows;
     }
 });
 
