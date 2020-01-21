@@ -11,8 +11,10 @@ router.get('/', function (req, res, next) {
     else {
         async function begin() {
             let data = {};
+            let teamData = await getTeamID();
             let commonData = await getPlayerCommonInfo();
             let gameLogData = await getPlayerGameLogs();
+            data['teamData'] = teamData;
             data['commonData'] = commonData;
             data['gameLogData'] = gameLogData;
             return data;
@@ -25,9 +27,17 @@ router.get('/', function (req, res, next) {
             })
     }
 
+    async function getTeamID() {
+        var pool = db.getPool();
+        var team_id = await pool.query(`select team_id from player where player_id=${player_id}`);
+        team_id = team_id.rows['0']['team_id'].toString();
+        var result = await pool.query(`select * from team where team_id=${team_id}`);
+        return result.rows;
+    }
+
     async function getPlayerCommonInfo() {
         var pool = db.getPool();
-        var result = await pool.query(`select player_id, lname, fname, position, team_abr from player where player_id=${player_id}`);
+        var result = await pool.query(`select * from player where player_id=${player_id}`);
         return result.rows;
     }
 

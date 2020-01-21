@@ -21,8 +21,9 @@ class PlayerGameInfo extends Component {
                 <table className="table table-sm table-bordered">
                     <thead className="thead-dark">
                         <tr>
-                            <th scope="col">game_id</th>
                             <th scope="col">date</th>
+                            <th scope="col">matchup</th>
+                            <th scope="col">W/L</th>
                             <th scope="col">mp</th>
                             <th scope="col">points</th>
                             <th scope="col">blocks</th>
@@ -33,8 +34,9 @@ class PlayerGameInfo extends Component {
                     <tbody>
                         {Object.keys(data).map(function (key) {
                             return <tr key={data[key]['game_id']}>
-                                <th>{data[key]['game_id']}</th>
                                 <th>{data[key]['game_date']}</th>
+                                <th>{data[key]['matchup']}</th>
+                                <th>{data[key]['winlose']}</th>
                                 <th>{data[key]['mp']}</th>
                                 <th>{data[key]['pts']}</th>
                                 <th>{data[key]['blk']}</th>

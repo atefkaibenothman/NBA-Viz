@@ -7,8 +7,10 @@ class PlayerCommonInfo extends Component {
         let fname = "First";
         let position = "Position";
         let team_abr = "Team abr";
+        let jersey = "--";
 
         if (this.props.cinfo.data === undefined) {
+            console.log('cinfo is undefined');
         }
         else {
             let data = this.props.cinfo.data['0'];
@@ -17,6 +19,7 @@ class PlayerCommonInfo extends Component {
             fname = data['fname'];
             position = data['position'];
             team_abr = data['team_abr'];
+            jersey = data['jersey'];
         }
 
         return (
@@ -24,7 +27,7 @@ class PlayerCommonInfo extends Component {
                 <div className="commoninfodiv">
                     <div>
                         <h4 className="inline">{fname} {lname}</h4>
-                        <h6 className="inline">#00</h6>
+                        <h6 className="inline">#{jersey}</h6>
                     </div>
                     <div>
                         <p className="statspan"><span className="teamname">{team_abr}</span><span className="playerpos">{position}</span></p>
