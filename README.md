@@ -2,8 +2,7 @@
 
 A visualizer for sport statistics
 
-![screen shot Screen Shot 2020-01-22 at 12 09 17 AM]
-(https://user-images.githubusercontent.com/40698347/72876586-a8f62800-3cab-11ea-8b5a-332514dde6a6.png)
+![homepgae](https://user-images.githubusercontent.com/40698347/72876586-a8f62800-3cab-11ea-8b5a-332514dde6a6.png)
 
 ---
 
