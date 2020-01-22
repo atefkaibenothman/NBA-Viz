@@ -2,7 +2,7 @@
 
 A visualizer for sport statistics
 
-![alt text](https://raw.githubusercontent.com/atefkaibenothman/nba-viz/master/homepage.png)
+![Uploading Screen Shot 2020-01-21 at 11.45.35 PM.png…]()
 
 ---
 
