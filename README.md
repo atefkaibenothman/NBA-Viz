@@ -2,7 +2,7 @@
 
 A visualizer for sport statistics
 
-![Home Page](/Users/kai/Documents/screenshots/Screen Shot 2020-01-21 at 11.49.08 PM.png)
+![Alt text](/Users/kai/Documents/screenshots/Screen Shot 2020-01-21 at 11.49.08 PM.png?raw=true "Home Page")
 
 ---
 
