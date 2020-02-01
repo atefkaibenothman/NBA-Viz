@@ -56,6 +56,13 @@ class Database:
     def add_team_common_info(self, team_id, info):
         self.db_team[team_id].add_common_info(info)
 
+    # adds fantasy logs to Player class
+    def add_fantasy_logs(self, first_name, last_name, fantasy_log):
+        for player_id, _player in self.db_player.items():
+            if (first_name in _player.first_name and last_name in _player.last_name):
+                self.db_player[player_id].add_fantasy_entry(fantasy_log)
+
+
     # connect to the db
     def connect_to_db(self):
         h = "localhost"
@@ -128,6 +135,67 @@ class Database:
         self.curr.execute(command)
         self.con.commit()
         print(f" --> created table: '{table_name}' <-- ")
+
+    # create FANTASY table
+    def create_fantasy_table(self):
+        table_name = "Fantasy"
+        self.drop_table(table_name)
+
+        command = f"""
+            CREATE TABLE IF NOT EXISTS {table_name} (
+                player_id INT PRIMARY KEY,
+                fname TEXT,
+                lname TEXT,
+                matchup TEXT,
+                points TEXT,
+                cost TEXT,
+                value TEXT,
+                mins TEXT,
+                pts TEXT,
+                rebs TEXT,
+                asts TEXT,
+                stls TEXT,
+                blks TEXT,
+                tos TEXT
+            );
+        """
+
+        self.curr.execute(command)
+        self.con.commit()
+        print(f" --> created table: '{table_name}' <-- ")
+
+    # insert fantasy data to database
+    def insert_fantasy_data(self):
+        for player_id, _player in self.db_player.items():
+            if len(_player.fantasy_log) != 0:
+                for game_id, _game in _player.fantasy_log.items():
+                    # print(player_id, _player)
+                    command = """
+                        INSERT INTO Fantasy (player_id, fname, lname, matchup, points, cost, value, mins, pts, rebs, asts, stls, blks, tos)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                    """
+
+                    self.curr.execute(
+                        command,
+                        (
+                            player_id,
+                            _player.first_name,
+                            _player.last_name,
+                            _game["opponent"],
+                            _game["fantasy_points"],
+                            _game["cost"],
+                            _game["value"],
+                            _game["min"],
+                            _game["pts"],
+                            _game["rebs"],
+                            _game["asts"],
+                            _game["stls"],
+                            _game["blks"],
+                            _game["tos"],
+                        ),
+                    )
+                self.con.commit()
+                print("inserted data into table")
 
     # create GameStats table
     def create_gamestats_table(self):

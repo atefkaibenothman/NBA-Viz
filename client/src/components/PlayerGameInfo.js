@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 class PlayerGameInfo extends Component {
     render() {
         let data = {};
-
         if (this.props.gamelogs.data !== undefined) {
             data = this.props.gamelogs.data;
         }
@@ -44,9 +43,6 @@ class PlayerGameInfo extends Component {
                                 <th>{data[key]['stl']}</th>
                             </tr>
                         })}
-                        {/* {Object.keys(data).map(function (key) {
-                            return <tr>{data[key]}</tr>
-                        })} */}
                     </tbody>
                 </table>
             </div>

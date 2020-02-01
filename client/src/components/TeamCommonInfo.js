@@ -12,7 +12,7 @@ class TeamCommonInfo extends Component {
         let team_loses = "Loses";
 
         if (this.props.tcinfo.data === undefined) {
-            console.log('tcinfo is undefined');
+            // console.log('tcinfo is undefined');
         }
         else {
             let data = this.props.tcinfo.data['0'];

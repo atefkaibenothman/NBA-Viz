@@ -11,6 +11,7 @@ class Player:
         self.team_abbreviation = None
         self.position = None
         self.game_log = dict()
+        self.fantasy_log = dict()
 
     def add_common_info(self, info):
         self.jersey = info["JERSEY"]
@@ -77,3 +78,32 @@ class Player:
             self.game_log[game_id]["pts"] = game["PTS"]  # points
             # plus/minus
             self.game_log[game_id]["plus_minus"] = game["PLUS_MINUS"]
+
+
+    def add_fantasy_entry(self, fantasy_log):
+        game_id = fantasy_log[7]
+        self.fantasy_log[game_id] = dict()
+
+        self.fantasy_log[game_id]["opponent"] = fantasy_log[7]
+        if (len(fantasy_log) == 20):
+            self.fantasy_log[game_id]["fantasy_points"] = fantasy_log[10]
+            self.fantasy_log[game_id]["cost"] = fantasy_log[11]
+            self.fantasy_log[game_id]["value"] = fantasy_log[12]
+            self.fantasy_log[game_id]["min"] = fantasy_log[13]
+            self.fantasy_log[game_id]["pts"] = fantasy_log[14]
+            self.fantasy_log[game_id]["rebs"] = fantasy_log[15]
+            self.fantasy_log[game_id]["asts"] = fantasy_log[16]
+            self.fantasy_log[game_id]["stls"] = fantasy_log[17]
+            self.fantasy_log[game_id]["blks"] = fantasy_log[18]
+            self.fantasy_log[game_id]["tos"] = fantasy_log[19]
+        elif (len(fantasy_log) == 21):
+            self.fantasy_log[game_id]["fantasy_points"] = fantasy_log[11]
+            self.fantasy_log[game_id]["cost"] = fantasy_log[12]
+            self.fantasy_log[game_id]["value"] = fantasy_log[13]
+            self.fantasy_log[game_id]["min"] = fantasy_log[14]
+            self.fantasy_log[game_id]["pts"] = fantasy_log[15]
+            self.fantasy_log[game_id]["rebs"] = fantasy_log[16]
+            self.fantasy_log[game_id]["asts"] = fantasy_log[17]
+            self.fantasy_log[game_id]["stls"] = fantasy_log[18]
+            self.fantasy_log[game_id]["blks"] = fantasy_log[19]
+            self.fantasy_log[game_id]["tos"] = fantasy_log[20]

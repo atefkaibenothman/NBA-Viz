@@ -10,7 +10,7 @@ class PlayerCommonInfo extends Component {
         let jersey = "--";
 
         if (this.props.cinfo.data === undefined) {
-            console.log('cinfo is undefined');
+            // console.log('cinfo is undefined');
         }
         else {
             let data = this.props.cinfo.data['0'];

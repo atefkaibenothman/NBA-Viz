@@ -13,6 +13,18 @@ body {
   padding-bottom: 10px;
 }
 
+.graph {
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  background-color: white;
+  height: 250px;
+}
+
 .gameinfodiv {
   padding-bottom: 5px;
   margin-left: 10px;

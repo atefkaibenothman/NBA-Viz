@@ -65,3 +65,13 @@ class Response:
                 self.db.add_team_common_info(team_id, info)
             else:
                 print("database not specified... cannot add common team info!")
+
+
+    def extract_fantasy_logs(self):
+        for i in self.resp:
+            info = i[0]
+            info = info.split()
+            data = info + i[1:]
+            first_name = info[2]
+            last_name = info[3]
+            self.db.add_fantasy_logs(first_name, last_name, data)
