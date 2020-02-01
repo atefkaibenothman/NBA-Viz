@@ -3,7 +3,7 @@
 A visualizer for sport statistics
 
 ![homepgae](https://user-images.githubusercontent.com/40698347/72876586-a8f62800-3cab-11ea-8b5a-332514dde6a6.png)
-![dashboard demo](https://github.com/{atefkaibenothman}/{nba-viz}/Users/kai/Documents/dev/nba-viz/demo.gif)
+![dashboard demo](https://github.com/atefkaibenothman/nba-viz/demo.gif)
 
 ---
 
