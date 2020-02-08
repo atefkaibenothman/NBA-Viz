@@ -62,6 +62,12 @@ class Database:
             if (first_name in _player.first_name and last_name in _player.last_name):
                 self.db_player[player_id].add_fantasy_entry(fantasy_log)
 
+    # adds box score data to Player class
+    def add_boxScore(self, first, last, player_id):
+        try:
+            print(self.db_player[int(player_id)])
+        except KeyError:
+            print(f"{first} {last} ({player_id}) does not exist in the database")
 
     # connect to the db
     def connect_to_db(self):

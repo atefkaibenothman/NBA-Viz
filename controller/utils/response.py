@@ -1,8 +1,8 @@
+import json
 from data.database import Database
 
+
 # goes through the response from nba_api and extracts the relevant info
-
-
 class Response:
     def __init__(self, resp, database=None):
         self.resp = resp
@@ -66,7 +66,6 @@ class Response:
             else:
                 print("database not specified... cannot add common team info!")
 
-
     def extract_fantasy_logs(self):
         for i in self.resp:
             info = i[0]
@@ -75,3 +74,21 @@ class Response:
             first_name = info[2]
             last_name = info[3]
             self.db.add_fantasy_logs(first_name, last_name, data)
+
+    def extract_boxScore(self):
+        d = json.loads(self.resp)
+        game_url = d["sports_content"]["game"]["game_url"]
+        print(f"-----> {game_url} <-----")
+        print("HOME")
+        for k, v in d["sports_content"]["game"]["home"]["players"].items():
+            for player in v:
+                self.db.add_boxScore(
+                    player["first_name"], player["last_name"], player["person_id"])
+        print()
+
+        print("VISITORS")
+        for k, v in d["sports_content"]["game"]["visitor"]["players"].items():
+            for player in v:
+                self.db.add_boxScore(
+                    player["first_name"], player["last_name"], player["person_id"])
+        print()
