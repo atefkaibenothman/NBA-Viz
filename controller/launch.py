@@ -52,8 +52,9 @@ def retrieve_teams(db):
     # retrieve team common info
     # download_common_team_info(db)
 
+    # retrieves the active players
 
-# retrieves the active players
+
 def retrieve_active_players(db):
     # retrieve active players
     download_all_players(database=db)
@@ -61,8 +62,9 @@ def retrieve_active_players(db):
     # retrieve common player info
     # download_common_player_info(db)
 
+    # retrieves the game stats for each player
 
-# retrieves the game stats for each player
+
 def retrieve_player_game_logs(db, COUNT=10):
     # retrieve player game logs
     download_player_game_log(SEASON, SEASON_TYPE, database=db)
@@ -76,13 +78,13 @@ def retrieve_fantasy_data(db):
 # inserts the data to the postgres database
 def insert_to_database(db):
     # insert team data
-    db.insert_team_data()
+    # db.insert_team_data()
 
     # # insert player data
-    db.insert_player_data()
+    # db.insert_player_data()
 
     # # insert game logs
-    # db.insert_game_logs()
+    db.insert_game_logs()
 
     # insert fantasy data
     # db.insert_fantasy_data()
@@ -129,6 +131,6 @@ if __name__ == "__main__":
     # retrieve_fantasy_data(db)
 
     # Inserts data
-    # insert_to_database(db)
+    insert_to_database(db)
 
     db.close_connection()

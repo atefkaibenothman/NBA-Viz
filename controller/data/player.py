@@ -36,6 +36,7 @@ class Player:
                 print(f'blocks: {stats["blk"]}')
                 print()
 
+    '''
     def add_game_log_entry(self, player_game_log):
         for game in player_game_log:
             game_id = game["Game_ID"]
@@ -78,7 +79,7 @@ class Player:
             self.game_log[game_id]["pts"] = game["PTS"]  # points
             # plus/minus
             self.game_log[game_id]["plus_minus"] = game["PLUS_MINUS"]
-
+    '''
 
     def add_fantasy_entry(self, fantasy_log):
         game_id = fantasy_log[7]
@@ -107,3 +108,29 @@ class Player:
             self.fantasy_log[game_id]["stls"] = fantasy_log[18]
             self.fantasy_log[game_id]["blks"] = fantasy_log[19]
             self.fantasy_log[game_id]["tos"] = fantasy_log[20]
+
+    def add_boxScoreEntry(self, date, game_id, matchup, entry):
+        self.game_log[game_id] = dict()
+        self.game_log[game_id]["game_date"] = date
+        self.game_log[game_id]["matchup"] = matchup
+        self.game_log[game_id]["win_lose"] = "#"
+        self.game_log[game_id]["min_played"] = entry["minutes"]
+        self.game_log[game_id]["fgm"] = entry["field_goals_made"]
+        self.game_log[game_id]["fga"] = entry["field_goals_attempted"]
+        self.game_log[game_id]["fg_pct"] = 0
+        self.game_log[game_id]["fg3m"] = entry["three_pointers_made"]
+        self.game_log[game_id]["fg3a"] = entry["three_pointers_attempted"]
+        self.game_log[game_id]["fg3_pct"] = 0
+        self.game_log[game_id]["ftm"] = entry["free_throws_made"]
+        self.game_log[game_id]["fta"] = entry["free_throws_attempted"]
+        self.game_log[game_id]["ft_pct"] = 0
+        self.game_log[game_id]["oreb"] = entry["rebounds_offensive"]
+        self.game_log[game_id]["dreb"] = entry["rebounds_defensive"]
+        self.game_log[game_id]["tot_reb"] = 0
+        self.game_log[game_id]["ast"] = entry["assists"]
+        self.game_log[game_id]["stl"] = entry["steals"]
+        self.game_log[game_id]["blk"] = entry["blocks"]
+        self.game_log[game_id]["tov"] = entry["turnovers"]
+        self.game_log[game_id]["pf"] = entry["fouls"]
+        self.game_log[game_id]["pts"] = entry["points"]
+        self.game_log[game_id]["plus_minus"] = entry["plus_minus"]

@@ -63,13 +63,15 @@ class Database:
                 self.db_player[player_id].add_fantasy_entry(fantasy_log)
 
     # adds box score data to Player class
-    def add_boxScore(self, first, last, player_id):
+    def add_boxScore(self, first, last, player_id, date, game_id, matchup, data):
         try:
-            print(self.db_player[int(player_id)])
+            self.db_player[int(player_id)].add_boxScoreEntry(
+                date, game_id, matchup, data)
+            # print(self.db_player[int(player_id)])
         except KeyError:
             print(f"{first} {last} ({player_id}) does not exist in the database")
 
-    # connect to the db
+        # connect to the db
     def connect_to_db(self):
         h = "localhost"
         db = "nba_db"

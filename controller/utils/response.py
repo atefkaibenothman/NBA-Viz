@@ -78,17 +78,14 @@ class Response:
     def extract_boxScore(self):
         d = json.loads(self.resp)
         game_url = d["sports_content"]["game"]["game_url"]
-        print(f"-----> {game_url} <-----")
-        print("HOME")
         for k, v in d["sports_content"]["game"]["home"]["players"].items():
             for player in v:
                 self.db.add_boxScore(
-                    player["first_name"], player["last_name"], player["person_id"])
+                    player["first_name"], player["last_name"], player["person_id"], d["sports_content"]["sports_meta"]["date_time"], d["sports_content"]["game"]["id"], d["sports_content"]["game"]["game_url"], player)
         print()
 
-        print("VISITORS")
         for k, v in d["sports_content"]["game"]["visitor"]["players"].items():
             for player in v:
                 self.db.add_boxScore(
-                    player["first_name"], player["last_name"], player["person_id"])
+                    player["first_name"], player["last_name"], player["person_id"], d["sports_content"]["sports_meta"]["date_time"], d["sports_content"]["game"]["id"], d["sports_content"]["game"]["game_url"], player)
         print()
