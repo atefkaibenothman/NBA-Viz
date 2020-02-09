@@ -11,6 +11,7 @@ class Database:
         self.db_team = dict()
         self.con = self.connect_to_db()
         self.curr = self.con.cursor()
+        self.daily_schedule = []
 
     # returns the number of players in the database
     def __len__(self):
@@ -69,21 +70,19 @@ class Database:
                 date, game_id, matchup, data)
             # print(self.db_player[int(player_id)])
         except KeyError:
-            print(f"{first} {last} ({player_id}) does not exist in the database")
+            # print(f"{first} {last} ({player_id}) does not exist in the database")
+            pass
 
-        # connect to the db
+    # connect to the db
     def connect_to_db(self):
         h = "localhost"
         db = "nba_db"
         usr = "kai"
         pw = "123"
         prt = 5432
-
         con = psycopg2.connect(host=h, database=db,
                                user=usr, password=pw, port=prt,)
-
         print(f" --> connected to database: '{db}' <-- ")
-
         return con
 
     # close connection to db
@@ -98,93 +97,103 @@ class Database:
         self.con.commit()
         print(f" --> dropping table: '{table_name}' <-- ")
 
-    # create PLAYER table
-    def create_player_table(self):
-        table_name = "Player"
+    # create table
+    def create_table(self, table_name, sql_cmd):
         self.drop_table(table_name)
-
-        command = f"""
-            CREATE TABLE IF NOT EXISTS {table_name} (
-                player_id INT PRIMARY KEY,
-                lname TEXT,
-                fname TEXT,
-                position TEXT,
-                jersey TEXT,
-                team_id INT REFERENCES team (team_id),
-                team_abr TEXT,
-                is_active BOOLEAN
-            );
-        """
-
-        self.curr.execute(command)
+        self.curr.execute(sql_cmd)
         self.con.commit()
         print(f" --> created table: '{table_name}' <-- ")
 
-    # create TEAM table
-    def create_team_table(self):
-        table_name = "Team"
-        self.drop_table(table_name)
-
-        command = f"""
-            CREATE TABLE IF NOT EXISTS {table_name} (
-                team_id INT PRIMARY KEY,
-                team_name TEXT,
-                team_abr TEXT,
-                team_city TEXT,
-                team_code TEXT,
-                team_conference TEXT,
-                team_division TEXT,
-                team_wins TEXT,
-                team_loses TEXT,
-                team_wlpct TEXT
-            );
-        """
-
-        self.curr.execute(command)
+    # insert into table TEAM
+    def insert_into_table_team(self, sql_cmd):
+        self.curr.execute(sql_cmd, (0, "#", "#", "#",
+                                    "#", "#", "#", "#", "#", "#"))
         self.con.commit()
-        print(f" --> created table: '{table_name}' <-- ")
 
-    # create FANTASY table
-    def create_fantasy_table(self):
-        table_name = "Fantasy"
-        self.drop_table(table_name)
-
-        command = f"""
-            CREATE TABLE IF NOT EXISTS {table_name} (
-                player_id INT PRIMARY KEY,
-                fname TEXT,
-                lname TEXT,
-                matchup TEXT,
-                points TEXT,
-                cost TEXT,
-                value TEXT,
-                mins TEXT,
-                pts TEXT,
-                rebs TEXT,
-                asts TEXT,
-                stls TEXT,
-                blks TEXT,
-                tos TEXT
-            );
-        """
-
-        self.curr.execute(command)
+        for team_id, _team in self.db_team.items():
+            self.curr.execute(
+                sql_cmd,
+                (
+                    team_id,
+                    _team.nick_name,
+                    _team.abbr,
+                    _team.city,
+                    _team.team_code,
+                    _team.conference,
+                    _team.division,
+                    _team.wins,
+                    _team.loses,
+                    _team.pct,
+                )
+            )
         self.con.commit()
-        print(f" --> created table: '{table_name}' <-- ")
+        print("inserted data into table: Team")
 
-    # insert fantasy data to database
-    def insert_fantasy_data(self):
+    # insert into table PLAYER
+    def insert_into_table_player(self, sql_cmd):
         for player_id, _player in self.db_player.items():
-            if len(_player.fantasy_log) != 0:
-                for game_id, _game in _player.fantasy_log.items():
-                    # print(player_id, _player)
-                    command = """
-                        INSERT INTO Fantasy (player_id, fname, lname, matchup, points, cost, value, mins, pts, rebs, asts, stls, blks, tos)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                    """
+            self.curr.execute(
+                sql_cmd,
+                (
+                    player_id,
+                    _player.last_name,
+                    _player.first_name,
+                    _player.position,
+                    _player.jersey,
+                    _player.team_id,
+                    _player.team_abbreviation,
+                    _player.is_active,
+                )
+            )
+        self.con.commit()
+        print("inserted data into table: Player")
 
+    # insert into table GameStats
+    def insert_into_table_gamestats(self, sql_cmd):
+        for player_id, _player in self.db_player.items():
+            if len(_player.game_log) != 0:
+                for game_id, _game in _player.game_log.items():
+                    # print(len(_player.game_log))
                     self.curr.execute(
-                        command,
+                        sql_cmd,
+                        (
+                            player_id,
+                            game_id,
+                            _game["game_date"],
+                            _game["matchup"],
+                            _game["win_lose"],
+                            _game["min_played"],
+                            _game["fgm"],
+                            _game["fga"],
+                            _game["fg_pct"],
+                            _game["fg3m"],
+                            _game["fg3a"],
+                            _game["fg3_pct"],
+                            _game["ftm"],
+                            _game["fta"],
+                            _game["ft_pct"],
+                            _game["oreb"],
+                            _game["dreb"],
+                            _game["tot_reb"],
+                            _game["ast"],
+                            _game["stl"],
+                            _game["blk"],
+                            _game["tov"],
+                            _game["pf"],
+                            _game["pts"],
+                            _game["plus_minus"],
+                        )
+                    )
+        self.con.commit()
+        print("inserted game logs into table: GameStats")
+
+    # insert into table Fantasy
+    def insert_into_table_fantasy(self, sql_cmd):
+        for player_id, _player in self.db_player.items():
+            if (len(_player.fantasy_log) != 0):
+                for game_id, _game in _player.fantasy_log.items():
+                    self.curr.execute(
+                        sql_cmd,
                         (
                             player_id,
                             _player.first_name,
@@ -200,172 +209,7 @@ class Database:
                             _game["stls"],
                             _game["blks"],
                             _game["tos"],
-                        ),
+                        )
                     )
-                self.con.commit()
-                print("inserted data into table")
-
-    # create GameStats table
-    def create_gamestats_table(self):
-        table_name = "GameStats"
-        self.drop_table(table_name)
-
-        command = f"""
-            CREATE TABLE IF NOT EXISTS {table_name} (
-                player_id INT REFERENCES player (player_id),
-                game_id INT,
-                game_date TEXT,
-                matchup TEXT,
-                winlose TEXT,
-                mp INT,
-                fgm INT,
-                fga INT,
-                fg_pct NUMERIC,
-                fg3m INT,
-                fg3a INT,
-                fg3_pct NUMERIC,
-                ftm INT,
-                fta INT,
-                ft_pct NUMERIC,
-                oreb INT,
-                dreb INT,
-                tot_reb INT,
-                ast INT,
-                stl INT,
-                blk INT,
-                tov INT,
-                pf INT,
-                pts INT,
-                plus_minus INT,
-                primary key (player_id, game_id)
-            )
-        """
-
-        self.curr.execute(command)
         self.con.commit()
-        print(f" --> created table: '{table_name}' <-- ")
-
-    # insert player id's and names to database
-    def insert_player_data(self):
-        for player_id, _player in self.db_player.items():
-            # print(player_id, _player)
-            command = """
-                INSERT INTO Player (player_id, lname, fname, position, jersey, team_id, team_abr, is_active)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
-            """
-
-            self.curr.execute(
-                command,
-                (
-                    player_id,
-                    _player.last_name,
-                    _player.first_name,
-                    _player.position,
-                    _player.jersey,
-                    _player.team_id,
-                    _player.team_abbreviation,
-                    _player.is_active,
-                ),
-            )
-        self.con.commit()
-        print("inserted data into table")
-
-    # insert team data to database
-    def insert_team_data(self):
-        self.curr.execute(
-            "INSERT INTO Team (team_id, team_name, team_abr, team_city, team_code, team_conference, team_division, team_wins, team_loses, team_wlpct) VALUES (%s, %s, %s ,%s, %s, %s, %s, %s, %s, %s);",
-            (0, "#", "#", "#", "#", "#", "#", "#", "#", "#"),
-        )
-        self.con.commit()
-
-        for team_id, _team in self.db_team.items():
-            command = """
-                INSERT INTO Team (team_id, team_name, team_abr, team_city, team_code, team_conference, team_division, team_wins, team_loses, team_wlpct)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-            """
-
-            self.curr.execute(
-                command,
-                (
-                    team_id,
-                    _team.nick_name,
-                    _team.abbr,
-                    _team.city,
-                    _team.team_code,
-                    _team.conference,
-                    _team.division,
-                    _team.wins,
-                    _team.loses,
-                    _team.pct,
-                ),
-            )
-        self.con.commit()
-        print("inserted data into team table")
-
-    # insert game logs to database
-    def insert_game_logs(self):
-        for player_id, _player in self.db_player.items():
-            if len(_player.game_log) != 0:
-                for game_id, _game in _player.game_log.items():
-                    game_date = _game["game_date"]
-                    min_played = _game["min_played"]
-                    matchup = _game["matchup"]
-                    winlose = _game["win_lose"]
-                    fgm = _game["fgm"]
-                    fga = _game["fga"]
-                    fg_pct = _game["fg_pct"]
-                    fg3m = _game["fg3m"]
-                    fg3a = _game["fg3a"]
-                    fg3_pct = _game["fg3_pct"]
-                    ftm = _game["ftm"]
-                    fta = _game["fta"]
-                    ft_pct = _game["ft_pct"]
-                    oreb = _game["oreb"]
-                    dreb = _game["dreb"]
-                    tot_reb = _game["tot_reb"]
-                    ast = _game["ast"]
-                    stl = _game["stl"]
-                    blk = _game["blk"]
-                    tov = _game["tov"]
-                    pf = _game["pf"]
-                    pts = _game["pts"]
-                    plus_minus = _game["plus_minus"]
-
-                    command = f"""
-                        INSERT INTO gamestats (player_id, game_id, game_date, matchup, winlose, mp, fgm, fga, fg_pct, fg3m, fg3a, fg3_pct, ftm, fta, ft_pct, oreb, dreb, tot_reb, ast, stl, blk, tov, pf, pts, plus_minus)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-                    """
-
-                    self.curr.execute(
-                        command,
-                        (
-                            player_id,
-                            game_id,
-                            game_date,
-                            matchup,
-                            winlose,
-                            min_played,
-                            fgm,
-                            fga,
-                            fg_pct,
-                            fg3m,
-                            fg3a,
-                            fg3_pct,
-                            ftm,
-                            fta,
-                            ft_pct,
-                            oreb,
-                            dreb,
-                            tot_reb,
-                            ast,
-                            stl,
-                            blk,
-                            tov,
-                            pf,
-                            pts,
-                            plus_minus,
-                        ),
-                    )
-
-        self.con.commit()
-        print("inserted game logs to database")
+        print("inserted fantasy logs into table: Fantasy")

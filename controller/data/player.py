@@ -113,7 +113,7 @@ class Player:
         self.game_log[game_id] = dict()
         self.game_log[game_id]["game_date"] = date
         self.game_log[game_id]["matchup"] = matchup
-        self.game_log[game_id]["win_lose"] = "#"
+        self.game_log[game_id]["win_lose"] = 0
         self.game_log[game_id]["min_played"] = entry["minutes"]
         self.game_log[game_id]["fgm"] = entry["field_goals_made"]
         self.game_log[game_id]["fga"] = entry["field_goals_attempted"]
